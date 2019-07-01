@@ -16,13 +16,13 @@
        psql -U yoichi -d template1;
 
 /* 6.- Crear la base de datos bdsimple.Explique lo sucedido */
-       CREATE DATABASE bdsimple;  // ERROR. El usuario YOICHI no puede crear base de datos porque no tiene permiso
+       CREATE DATABASE bdsimple;  // ERROR. El usuario YOICHI no puede crear base de datos porque no tiene permiso.
 
 /* 7.- Conectarse a la base de datos template1 con el usuario PIERO */
        psql -U piero -d template1;
 
 /* 8.- Crear las bases de datos bdsimple y personal con el nuevo usuario(piero) */
-       CREATE DATABASE bdsimple; // Si se puede crear base de datos con el usuario piero porque tiene permisos al ser creado
+       CREATE DATABASE bdsimple; // Si se puede crear base de datos con el usuario piero porque tiene permisos al ser creado.
        CREATE DATABASE personal;
 
 /* 9.- ¿Que atajo se usa para listar las bases de datos creadas? */
@@ -35,7 +35,7 @@
        \c personal               // Primero habiendo salido de la base da datos bdsimple (\q)
 
 /*12.- Eliminar la base datos personal.Comente lo sucedido */
-       DROP DATABASE personal;   // ERROR. No puedes eliminar una base da datos cuando te encuentras en ella
+       DROP DATABASE personal;   // ERROR. No puedes eliminar una base da datos cuando te encuentras en ella.
 
 /*13.- Eliminar la base de datos bdsimple */
        DROP DATABASE bdsimple;
@@ -56,6 +56,6 @@
        \c rrhh
 
 /*19.- Volver a renombrar la base de datos rrhh por personal. ¿Que sucede? */
-       ALTER DATABASE rrhh RENAME TO personal;  // ERROR. No puedes renombrar una base de datos cuando te encuentras en ella
+       ALTER DATABASE rrhh RENAME TO personal;  // ERROR. No puedes renombrar una base de datos cuando te encuentras en ella.
        
-/* ###END### */
+/* ### END ### */
