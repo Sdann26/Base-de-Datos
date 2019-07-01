@@ -1,0 +1,81 @@
+/* ##### Laboratorio 2 : Gestion de Tablas ##### */
+
+/* 1.- Proceda a crear la base de datos empresa */
+       CREATE DATABASE empresa;
+
+/* 2.- Crear la tabla empleado con los siguientes atributos */
+
+           ATRIBUTO |   TIPO   | LONGITUD | MODIFICADOR   
+          ----------+----------+----------+-------------
+           Empid    | Entero   |          | No nulo
+           nombres  | Caracter |    40    | No nulo
+           Apellidos| Caracter |    40    | No nulo
+           Email    | Caracter |    80    | No nulo
+           Telefono | Caracter |     7    | 
+
+       CREATE TABLE empleado(
+       empid integer NOT NULL,
+       nombres character(40) NOT NULL,
+       apellidos character(40) NOT NULL,
+       email character(80) NOT NULL,
+       telefono character(7));
+
+/* 3.- Crear la tabla departamento con los siguientes atributos */
+
+           ATRIBUTO |   TIPO   | LONGITUD | MODIFICADOR   
+          ----------+----------+----------+-------------
+           depid    | Entero   |          | No nulo
+           nombres  | Caracter |    60    | No nulo
+           Nroemp   | Entero   |          | 
+
+       CREATE TABLE empleado(
+       depid integer NOT NULL,
+       nombres varchar(40) NOT NULL,
+       nroemp integer );
+
+/* 4.- Crear la tabla empleado2 copiando la estructura de la tabla empleado */
+       CREATE TABLE empleado2 AS SELECT * FROM empleado;  // Crea una tabla copiando todos(*) los atributos de la tabla empleado.
+
+/* 5.- Crear la tabla empleado3 copiando los atributos nombres y apellidos de la tabla empleado */
+       CREATE TABLE empleado3 AS SELECT nombres, apellidos FROM empleado; 
+       // Crea una tabla copiando solo los atributos "nombres" y "apellidos" de la tabla empleado
+
+/* 6.- ¿Que atajos se usa para listar las tablas creadas y ver la estructura de una tabla creada ? */
+       \dt             ----> Lista todas las tablas creadas 
+       \d NombreTabla  ----> Lista la estructura de una tabla
+
+/* 7.- Crear la tabla temporal tmp_eventual copiando los atributos nombres y apellidos de la tabla empleado */
+       //Existen dos formas
+       CREATE TEMP TABLE tmp_eventual AS SELECT nombres, apellidos FROM empleado;
+       CREATE TEMPORARY TABLE tmp_eventual AS SELECT nombres, apellidos FROM empleado;
+
+/* 8.- Revisar las estructuras de las tablas empleado2 y empleado3 */
+       // Cuando sales de los usuarios postgresql y retornas , se observa que la tabla temporal "tmp_eventual" desapareció.
+
+/* 9.- Ahora elimine la tabla departamento */
+       DROP TABLE departamento;  // Forma de eliminar una sola tabla.
+
+/*10.- A continuacion elimine las tablas empleado2 y empleado3 a la vez */
+       DROP TABLE empleado2,empleado3;  // Forma de eliminar mas de una tabla.
+
+/*11.- Agregar la fecha de cumpleaños en la tabla empleado */
+       ALTER TABLE empleado ADD COLUMN fcumple DATE;  // Agrega un nuevo atributo "fcumple" de tipo DATE.
+
+/*12.- Revisar la nueva estructura de tabla empleado */
+       \d empleado  ---> Se observa que ya se añadió el atributo fcumple
+
+/*13.- Ahora agregue el modificador NO NULO en la columna fcumple */
+       ALTER TABLE empleado ALTER COLUMN fcumple SET NOT NULL;  // Modifica la columna fcumple y la condiciona a NOT NULL.
+
+/*14.- Proceda a verificar los cambios */
+       \d empleado  ---> Se observa que ya se condicionó el atributo fcumple a NOT NULL
+
+/*15.- Cambiar el tipo de la columna fcumple por TIMESTAMP */
+       ALTER TABLE empleado ALTER COLUMN fcumple TYPE TIMESTAMP; // Modificamos el tipo de dato de fcumple de "DATE" a "TIMESTAMP".
+
+/*16.- Cambiar el nombre de la columna de fcumple a fnacim */
+       ALTER TABLE empleado RENAME COLUMN fcumple TO fnacim;    // Modificamos el nombre de la columna fcumple a fnacim.
+
+/* ### END ### */
+
+       
