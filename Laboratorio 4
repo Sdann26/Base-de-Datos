@@ -1,0 +1,161 @@
+/* ##### Laboratorio 4 : Lenguaje SQL ##### */
+// Crear una base de datos banco donde se restaurará el backup "dbbanco.backup" haciendo los siguientes pasos:
+// psql -i -u postgres / escribir "sudo bash", escribes contraseña, escribes "su postgres"
+// psql  (entramos con el usuario postgres)
+// CREATE DATABASE banco;  (creamos las base de datos banco donde se va a restaurar)
+// \q  (salimos del usuario postgres)
+// cd /Escritorio  (entramos al escritorio pero dentro de postgres)
+// psql -d dbbanco - f dbbanco.backup  (realizamos la restauracion)
+// psql -U postgres - d banco (empezamos a trabajar en la base de datos restaurada)
+
+   OPERACION SELECCION
+
+/* 1.- Seleccionar las tuplas de prestamo en que la sucursal es 'SAN ANTONIO' */
+       SELECT * FROM prestamo WHERE "nombre-sucursal" =  'SAN ANTONIO';
+
+/* 2.- Seleccionar las tuplas cuyo importe prestado sea mayor que 1200 */
+       SELECT * FROM prestamo WHERE importe > 1200;
+
+/* 3.- Seleccionar las tuplas con prestamos de mas de 1200 concedidos por la sucursal de San Antonio */
+       SELECT * FROM prestamo WHERE importe > 1200 AND "nombre-sucursal" = 'SAN ANTONIO';
+
+/* 4.- Agregar las tuplas en la relacion "responsable-prestamo" */
+       ('SANTOS','SANTOS','P-17')
+       ('FERNANDEZ','JIMENEZ','P-16')
+       ('GOMEZ','TEJADA','P-11')
+       ('GOMEZ','BELAUNDE','P-23')
+       ('SOTELO','SOTELO','P-17')
+
+       INSERT INTO "responsable-prestamo" VALUES ('SANTOS','SANTOS','P-17'),
+                                                 ('FERNANDEZ','JIMENEZ','P-16'),
+                                                 ('GOMEZ','TEJADA','P-11'),
+                                                 ('GOMEZ','BELAUNDE','P-23'),
+                                                 ('SOTELO','SOTELO','P-17');
+
+/* 5.- Hallar todos los clientes que se llaman igual que su responsable de prestamo */
+       SELECT * FROM "responsable-prestamo" WHERE "nombre-cliente" = "nombre-prestamo";
+
+/* 6.- Agregar las siguientes tuplas en las relaciones indicadas */
+
+       SUCURSAL
+       ('RAZURI','TRUJILLO',9500000)
+       ('LARCO','LIMA',8700000)
+       ('HUASCARAN','HUARAZ',5700000)
+
+       CLIENTE
+       ('GUERRERO','MARISCAL CASTILLA','HUACHO')
+       ('RIVERA','HUANDOY','HUARAZ')
+
+       IMPOSITOR
+       ('LOPEZ','C-306')
+
+       PRESTAMO
+       ('C-306','HUASCARAN',1500)
+       ('P-94','HUASCARAN')
+
+       INSERT INTO sucursal VALUES ('RAZURI','TRUJILLO',9500000),
+                            ('LARCO','LIMA',8700000),
+                            ('HUASCARAN','HUARAZ',5700000);
+
+       INSERT INTO cliente VALUES ('GUERRERO','MARISCAL CASTILLA','HUACHO'),
+                                  ('RIVERA','HUANDOY','HUARAZ');
+
+       INSERT INTO impositor VALUES ('LOPEZ','C-306');
+
+       INSERT INTO prestamo VALUES ('C-306','HUASCARAN',1500),
+                                   ('P-94','HUASCARAN');
+
+   OPERACION PROYECCION
+
+/* 7.- Obtener el nombre de todas las sucursales de la relacion prestamo */
+       SELECT "nombre-sucursal" FROM prestamo;
+
+/* 8.- Eliminar los duplicados de la relacion anterior */
+       SELECT DISTINCT "nombre-sucursal" FROM prestamo;
+
+/* 9.- Indique la clausula predeterminada para especificar que no se eliminen los duplicados */
+       SELECT ALL "nombre-sucursal" FROM prestamo;
+
+/*10.- Elabora una lista de toos los numeros e importes de los prestamos */
+       SELECT "numero-prestamo",importe FROM prestamo;
+
+   COMPOSICION DE OPERACIONES RELACIONALES
+
+/*11.- Listar todos los clientes que viven en Chiclayo */
+       SELECT * FROM cliente WHERE "ciudad-cliente" = 'CHICLAYO';
+
+/*12.- Obtener todos los numeros de prestamo de los prestamos concedidos en la sucursal de SAN ANTONIO e importe superior a 1200 */
+       SELECT "numero-prestamo" FROM prestamo WHERE "nombre-sucursal" = 'SAN ANTONIO' AND importe>1200 ;
+
+/*13.- Utilice la clausula between para obtener el numero de prestamo de aquellos prestamos con importe entre 900 y 1000 */
+       SELECT "numero-prestamo" FROM prestamo WHERE importe >= 900 AND importe <= 1000; // Primera forma
+       SELECT "numero-prestamo" FROM prestamo WHERE importe BETWEEN 900 AND 1000;       // Segunda forma
+
+   OPERACION UNIÓN
+
+/*14.- Determinar el nombre de todos los clientes del banco que tienen una cuenta , un prestamo o ambas cosas */
+       SELECT "nombre-cliente" FROM impositor UNION SELECT "nombre-cliente" FROM prestatario;
+
+   OPERACION DIFERENCIA
+
+/*15.- Listar todos los clientes del banco que tienen aperturada una cuenta pero no tengan concedido ningun prestamo */
+       SELECT "nombre-cliente" FROM impositor EXCEPT SELECT "nombre-cliente" FROM prestatario;
+
+   PRODUCTO CARTESIANO
+
+/*16.- Elabora el producto cartesiano de prestatario x prestamo */
+       SELECT * FROM prestatario,prestamo;
+
+/*17.- Obtener el nombre, el numero de prestamo y el importe para todos los clientes que tienen un prestamo del banco */
+       SELECT "nombre-cliente", prestamo."numero-prestamo", importe FROM prestatario, prestamo 
+       WHERE prestatario."numero-prestamo"=prestamo."numero-prestamo";
+
+/*18.- Determinar el nombre del cliente, el numero de prestamo y el importe de todos prestamos de la sucursal SAN ANTONIO */
+       SELECT "nombre-cliente", prestamo."numero-prestamo", importe FROM prestatario, prestamo 
+       WHERE prestatario."numero-prestamo"=prestamo."numero-prestamo" AND "nombre-sucursal"='SAN ANTONIO';
+
+   LA OPERACION RENOMBRAMIENTO
+
+/*19.- En la consulta anterior cambie el atributo "numero-prestamo" por idprestamo */
+       SELECT "nombre-cliente", prestamo."numero-prestamo" AS idprestamo, importe FROM prestatario, prestamo 
+       WHERE prestatario."numero-prestamo"=prestamo."numero-prestamo" AND "nombre-sucursal"='SAN ANTONIO';
+       --(Solo cambia el nombre de la columna que se va mostrar con el select, es decir, en vez de salir
+       -- como nombre de columna "numero-prestamo" saldrá "idprestamo")
+
+   VARIABLES TUPLA
+
+/*20.- Para todos los clientes que tienen concedido un prestamo por el banco, obtener el nombre, el numero de 
+       prestamo y su importe */
+       SELECT "nombre-cliente",B."numero-prestamo", importe FROM prestatario AS A,prestamo AS B;
+
+/*21.- Determinar el nombre de todas las sucursales que tienen activos mayores que al menos, una sucursal de huaral */
+       SELECT A."nombre-sucursal" FROM sucursal AS A, sucursal AS B 
+       WHERE(A.activos>B.activos AND B."ciudad-sucursal"='Huaral');
+
+   COMPARACION DE PATRONES
+
+/*22.- Determinar el nombre de todos los clientes cuya direccion contenga la subcadena de caracteres 'ES' */
+       SELECT "nombre-cliente" FROM cliente WHERE "calle-cliente" LIKE '%ES%';
+
+/*23.- Obtener un relacion en orden alfabetico de todos los clientes que tienen un prestamo en la sucursal 
+       de 'SAN ANTONIO' */
+       SELECT "nombre-cliente" FROM prestatario AS A, prestamo AS B WHERE A."numero-prestamo"=B."numero-prestamo" AND
+       B."nombre-sucursal"='SAN ANTONIO' ORDER BY "nombre-cliente";
+
+/*24.- Listar toda la relacion prestamo en orden descendente de importe.Si varios prestamos tienen el mismo importe 
+       ordenar de forma ascendente segun sus numeros de prestamo */
+       SELECT importe A."numero-prestamo" FROM prestamo A, prestamo B WHERE A."numero-prestamo"=B."numero-prestamo" ORDER BY
+       importe DESC, B."numero-prestamo" ASC;
+
+       SELECT * FROM prestamo ORDER BY importe DESC, "numero-prestamo" ASC; /* MEJOR OPCION !!!! */
+
+   OPERACIONES SOBRE CONJUNTOS:La operacion unión
+   La operacion unión junta dos columnas en una sola siempre y cuando sean del mismo tipo de dato
+
+/*25.- Determinar todos los clientes del banco que tienen un prestamo , una cuenta o las dos cosas */
+       SELECT "nombre-cliente" FROM prestatario UNION SELECT "nombre-cliente" FROM impositor;
+
+/*26.- En la consulta anterior conservar todos los duplicados */
+       SELECT "nombre-cliente" FROM prestatario UNION ALL SELECT "nombre-cliente" FROM impositor;
+
+/* ### END ### */
