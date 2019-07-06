@@ -1,0 +1,145 @@
+/* ##### Laboratorio 3 : Creacion de Bases de Datos ##### */
+
+/* 1.- Crear usando la herramienta psql la base de datos MiBanco */
+       CREATE DATABASE mibanco;
+
+/* 2.- Crear las tablas correspondientes a la base de datos "mibanco" de acuerdo al siguiente diagrama, estableciendo el tipo 
+       de datos adecuado para cada atributo */
+       
+     |     SUCURSAL    |   |     CUENTA      |   |   IMPOSITOR    |   |    PRESTAMO     |   |   PRESTATARIO   |   |     CLIENTE     |
+    -+-----------------+- -+-----------------+- -+----------------+- -+-----------------+- -+-----------------+- -+-----------------+-
+     | nombre_sucursal |   | numero_cuenta   |   | nombre_cliente |   | numero_prestamo |   | nombre_cliente  |   | nombre_cliente  |
+     | ciudad_sucursal |   | nombre_sucursal |   | numero_cuenta  |   | nombre_sucursal |   | numero_prestamo |   | calle_cliente   |
+     | activos         |   | saldo           |   |                |   | importe         |   |                 |   | ciudad_cliente  |
+
+       CREATE TABLE sucursal(
+       nombre_sucursal character varying(15) NOT NULL,
+       ciudad_sucursal character varying(15) NOT NULL,
+       activos character varying(10) NOT NULL);
+
+       CREATE TABLE cuenta(
+       numero_cuenta character(5) NOT NULL,
+       nombre_sucursal character varying(15) NOT NULL,
+       saldo integer NOT NULL);
+
+       CREATE TABLE impositor(
+       nombre_cliente character varying(15) NOT NULL,
+       numero_cuenta character(5) NOT NULL);
+
+       CREATE TABLE prestamo(
+       numero_prestamo character(4) NOT NULL,
+       nombre_sucursal character varying(15) NOT NULL,
+       importe integer NOT NULL);
+
+       CREATE TABLE prestatario(
+       nombre_cliente character varying(15) NOT NULL,
+       numero_prestamo character(4) NOT NULL);
+       
+       CREATE TABLE cliente(
+       nombre_cliente character varying(15) NOT NULL,
+       calle_cliente character varying(15) NOT NULL,
+       ciudad_cliente character varying(15) NOT NULL);
+
+/* 3.- Inserte las siguientes tuplas en la relacion Cuenta */
+      
+       'C-101','DERECHA',500
+       'C-102','SAN ANTONIO',400
+       'C-201','IZQUIERDA',900
+       'C-215','HABICH',700
+       'C-217','IZQUIERDA',750
+       'C-222','28 DE JULIO',700
+       'C-305','ANGAMOS',350
+
+       INSERT INTO "cuenta" VALUES ('C-101','DERECHA',500),
+                                   ('C-102','SAN ANTONIO',400),
+                                   ('C-201','IZQUIERDA',900),
+                                   ('C-215','HABICH',700),
+                                   ('C-217','IZQUIERDA',750),
+                                   ('C-222','28 DE JULIO',700),
+                                   ('C-305','ANGAMOS',350);
+
+/* 4.- Inserte las siguientes tuplas en la relacion Sucursal */
+      
+       'HABICH','LIMA',400000
+       'DERECHA','HUARAL',9000000
+       'ANGAMOS','LIMA',8000000
+       'IZQUIERDA','HUARAL',7100000
+       '28 DE JULIO','HUACHO',2100000
+       'SAN ANTONIO','CUSCO',1700000
+       'ALCAZAR','LIMA',300000
+       'SUCRE','AREQUIPA',370000
+
+       INSERT INTO "sucursal" VALUES ('HABICH','LIMA',400000),
+                                     ('DERECHA','HUARAL',9000000),
+                                     ('ANGAMOS','LIMA',8000000),
+                                     ('IZQUIERDA','HUARAL',7100000),
+                                     ('28 DE JULIO','HUACHO',2100000),
+                                     ('SAN ANTONIO','CUSCO',1700000),
+                                     ('ALCAZAR','LIMA',300000),
+                                     ('SUCRE','AREQUIPA',370000);
+
+/* 5.- Inserte las siguientes tuplas en la relacion Prestamo */
+      
+       'P-11','ANGAMOS',900
+       'P-14','DERECHA',1500
+       'P-15','SAN ANTONIO',1500
+       'P-16','SAN ANTONIO',1300
+       'P-17','DERECHA',1000
+       'P-23','28 DE JULIO',2000
+       'P-93','HABICH',500
+
+       INSERT INTO "prestamo" VALUES ('P-11','ANGAMOS',900),
+                                     ('P-14','DERECHA',1500),
+                                     ('P-15','SAN ANTONIO',1500),
+                                     ('P-16','SAN ANTONIO',1300),
+                                     ('P-17','DERECHA',1000),
+                                     ('P-23','28 DE JULIO',2000),
+                                     ('P-93','HABICH',500);
+
+/* 6.- Inserte las siguientes tuplas en la relacion Cliente */
+      
+       'ANGELES','MAYOR','HUANCAYO'
+       'ASTUDILLO','CHIVAY','AREQUIPA'
+       'BARBARAN','INSURGENTES','HUANCAYO'
+       'FERNANDEZ','EMBAJADORES','CHICLAYO'
+       'GOMEZ','VALLEJO','TRUJILLO'
+       'GONZALES','ARENALES','ICA'
+       'LOPEZ','HUASCARAN','HUARAZ'
+       'PEREZ','VALLEJO','TRUJILLO'
+       'RODRIGUEZ','BAÑOS DEL INCA','CAJAMARCA'
+       'RUPAY','REQUE','CHICLAYO'
+       'SANTOS','VIÑEDOS','CHINCHA'
+       'VALDIVIESO','SANTIAGO DE CHUCO','TRUJILLO'
+
+       INSERT INTO "cliente" VALUES ('ANGELES','MAYOR','HUANCAYO'),
+                                    ('ASTUDILLO','CHIVAY','AREQUIPA'),
+                                    ('BARBARAN','INSURGENTES','HUANCAYO'),
+                                    ('FERNANDEZ','EMBAJADORES','CHICLAYO'),
+                                    ('GOMEZ','VALLEJO','TRUJILLO'),
+                                    ('GONZALES','ARENALES','ICA'),
+                                    ('LOPEZ','HUASCARAN','HUARAZ'),
+                                    ('PEREZ','VALLEJO','TRUJILLO'),
+                                    ('RODRIGUEZ','BAÑOS DEL INCA','CAJAMARCA'),
+                                    ('RUPAY','REQUE','CHICLAYO'),
+                                    ('SANTOS','VIÑEDOS','CHINCHA'),
+                                    ('VALDIVIESO','SANTIAGO DE CHUCO','TRUJILLO');
+
+/* 7.- Inserte las siguientes tuplas en la relacion Impositor */
+      
+       'ANGELES','C-305'
+       'GOMEZ','C-215'
+       'GONZALES','C-101'
+       'GONZALES','C-201'
+       'LOPEZ','C-102'
+       'RUPAY','C-222'
+       'SANTOS','C-217'
+
+       INSERT INTO "impositor" VALUES ('ANGELES','C-305'),
+                                      ('GOMEZ','C-215'),
+                                      ('GONZALES','C-101'),
+                                      ('GONZALES','C-201'),
+                                      ('LOPEZ','C-102'),
+                                      ('RUPAY','C-222'),
+                                      ('SANTOS','C-217');
+
+/* ### END ### */
