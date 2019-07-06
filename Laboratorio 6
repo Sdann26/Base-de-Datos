@@ -1,0 +1,37 @@
+/* ##### Laboratorio 6 : Subconsultas ##### */
+//Restaure la BD dupont y luego realice las siguientes consultas
+
+/*1.- Obtener los apellidos y nombres del empleado con mayor sueldo */
+
+     SELECT E.nombres,E.apellidos FROM empleados E WHERE E.sueldo=(SELECT MAX(sueldo) FROM empleados);
+
+/*2.- Obtener los apellidos y nombres de todos los compañeros de departamento de John Chen */
+
+     SELECT E.nombres,E.apellidos FROM empleados E WHERE E.departamento_id=(SELECT departamento_id FROM empleados 
+     WHERE nombres='John' AND apellidos='Chen');
+
+/*3.- Obtener los apellidos y nombres de todos los empleados con mayor sueldo de cada departamento */
+
+     SELECT E.nombres,E.apellidos,E.departamento_id,E.sueldo FROM empleados E WHERE E.empleado_id IN 
+     (SELECT MAX(sueldo) FROM empleados GROUP BY departamento_id);
+
+     SELECT E.nombres,E.apellidos,E.departamento_id FROM empleados E WHERE E.sueldo=(SELECT MAX(sueldo) FROM empleados)
+     GROUP BY E.departamento_id,E.nombres,E.apellidos; 
+ 
+     SELECT E.nombres,E.apellidos,E.departamento_id,E.sueldo FROM empleados E WHERE E.empleado_id IN 
+     (SELECT empleado_id FROM empleados GROUP BY departamento_id);
+
+/*4.- Elabore una consulta que muestre a todas aquellas ciudades, el codigo de su pais y un mensaje indicando si es 
+      o no de la India para todas las ciudades cuyo nombre empiece con B */
+
+
+/*5.- Elabore una consulta que presente el codigo de departamento,el nombre de departamento y el sueldo mas alto de
+      dicho departamento */  
+
+     SELECT D.departamento_id,D.departamento_nombre,MAX(sueldo) FROM departamento D,empleados E 
+     WHERE E.departamento_id=D.departamento_id GROUP BY departamento_id; --revisar que esta mal
+
+/*6.- Elabore una lista que presente el codigo del pais,la ciudad, el estado al que pertenece dicha ciudad donde 
+      se ubican las sucursales (localidades) la cual debera estar ordenanda segun el nombre del pais */ 
+      
+/* ### END ### */
