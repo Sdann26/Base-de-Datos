@@ -1,0 +1,276 @@
+/* ##### Laboratorio 5 : Funciones agregadas y agrupación ##### */
+// Restaure la BD gmd y desarrolle:
+
+   CLAUSULA SELECT
+
+/* 1.- Halle la suma de los salarios de todos los empleados, el salario maximo, el salario minimo y el salario neto */
+       SELECT SUM(salario), MAX(salario), MIN(salario), AVG(salario) AS promedio FROM empleado;
+
+/* 2.- Halle la suma de los salarios de todos los empleados del departamento de INVESTIGACION, asi como el salario 
+       maximo, el salario minimo y el salario medio de dicho departamento */
+       SELECT SUM(salario),MAX(salario), MIN(salario), AVG(salario) AS promedio FROM empleado AS E, departamento AS D 
+       WHERE E.nd=D.numerod AND D.nombred ='INVESTIGACION';
+
+/* 3.- Recupere el total de empleados de la empresa */
+       SELECT COUNT(*) AS Total_Empleados FROM empleado;
+
+/* 4.- Recupere el numero de empleados del departamento de INVESTIGACION */
+       SELECT COUNT(*) AS Total_Empleados FROM empleado AS E, departamento AS D WHERE E.nd=D.numerod 
+       AND D.nombred='INVESTIGACION';
+
+/* 5.- Presente el numero de salarios diferentes de la relacion empleado */
+       SELECT DISTINCT salario FROM empleado;  //Muestra los salarios diferentes
+       SELECT COUNT(DISTINCT salario) FROM empleado; //Cuenta los salarios diferentes
+
+/* 6.- Recuperar los nombres de todos los empleados que tienen dos o mas famiiares */
+       SELECT nombre FROM empleado AS E WHERE (SELECT COUNT(*) FROM dependiente D WHERE E.nss=D.nsse)>=2;
+
+   CLAUSULA GROUP BY
+
+/* 7.- Recupere el numero del proyecto, el nombre del proyecto y el numero de empleados de cada departamento 
+       y su salario medio */
+       SELECT nd,nombred,COUNT(*) cantidad_empleados , AVG(salario) Salario_Medio FROM empleado E, departamento D 
+       WHERE E.nd=D.numerod GROUP BY nd,nombred ORDER BY nd;
+
+/* 8.- De cada proyecto, recupere su numero, nombre y el total de empleados que trabajan en él */
+       SELECT numero,nombrep, COUNT(*) FROM proyecto AS P, trabaja_en AS T WHERE P.numerop=T.np GROUP BY numerop,nombrep;
+
+   CLAUSULA HAVING
+
+/* 9.- De cada proyecto en el que trabajan mas de dos empleados, recupere su numero, su nombre y la cantidad de empleados que 
+       trabajan en el */
+       SELECT numerop,nombrep,COUNT(*) FROM proyecto AS P, trabaja_en AS T WHERE P.numerop=T.np GROUP BY numerop, nombrep
+       HAVING COUNT(*)>2 ORDER BY numerop;
+
+/*10.- De cada proyecto, recupere su numero, su nombre y la cantidad de empleados del departamento 5 que trabajan en el */
+       SELECT numerop,nombrep,COUNT(*) FROM proyecto AS P, trabaja_en AS T WHERE P.numerop=T.np  AND nd=5 
+       GROUP BY numerop,nombrep ORDER BY numerop;
+
+/*11.- De cada departamento que tenga mas de 5 empleados, recupere el numero del departamento y el numero de empleados 
+       que ganan mas de 4 mil soles */
+       SELECT numerod,COUNT(*) FROM departamento D,empleado E WHERE ( D.numerod=E.nd AND E.salario>40000)
+       GROUP BY numerod HAVING COUNT(*) > 5 ORDER BY numerod;    
+       --INTERPRETACION :El primer COUNT cuenta la cantidad de "numerod" que cumplen la condicion WHERE; el GROUP BY
+       --                agrupa la forma en que se va mostrar, es decir, va a mostrar cada "numerod" con su respectiva
+       --                cantidad de "numerod" que cumplen la condicion; El HAVING nos restringe que los COUNT obtenidos
+       --                anteriormente deben ser mayor a 5 sino no se muestran.
+
+/* ##### Laboratorio 5 : Sentencias INSERT, DELETE Y UPDATE ##### */
+
+   INSTRUCCIONES INSERT:
+
+/*12.- Añadir una nueva tupla a la relacion empleado */
+       INSERT INTO empleado VALUES 
+              ('JHORDAN','P','PEREZ','987654321','1996-07-13','Belen Calle Las Flores Mz F Lot.1','H',50000,'888665555',1);
+
+/*13.- Introducir una tupla para un nuevo empleado del ual solo conocemos los atributos nombres, apellido y nss */
+       INSERT INTO empleado(nombre,apellido,nss) VALUES ('JUAN','ALVAREZ','987651234');
+
+/*14.- La instruccion siguiente es rechazada si el SGBD soporta la verificacion de la integridad referencial */
+
+       INSERT INTO empleado(nombre,apellido,nss) VALUES ('JOSE','GALVEZ','987651234'); --> Aceptada por el SGBD
+       
+       -- La INTEGRIDAD REFERENCIAL es una propiedad de la base de datos, significa que la clave externa de un tabla
+       -- de referencia (foreign key) siempre debe corresponder a una fila valida de la tabla a la que se haga referencia.
+       -- La integridad referencial garantiza que la relacion entre dos tablas permanezca sincronizada durante los procesos
+       -- de actualizacion y eliminacion.
+
+       -- En nuestro ejemplo de insercion , la tupla no cuenta con el campo "nd" (# departamento) por lo que esta tupla
+       -- no se podra relacionar con la tabla "departamento".
+
+/*15.- La instruccion siguiente es rechazada si el SGBD soporta la verificacio de NOT NULL */
+    
+       INSERT INTO empleado(nombre,apellido,nss) VALUES ('JASMIN','CARDENAS',NULL); -->Aceptada por el SGBD
+
+       -- Las Restricciones de Entidades aseguran la integridad de las entidades que son modeladas por el sistema.En el 
+       -- nivel mas simple, la existencia de una clave principal es una restriccion de entidad que impone la regla :
+       -- "Cada entidad debe estar identificada de forma unica".
+       -- En esta no esta permitido que algun componente de la clave primaria ACEPTE VALORES NULOS.
+
+/*16.- Crear la tabla temporal "info_deptos" con los nombres , el numero de los empleados y el total de salarios de 
+       cada departamento */
+
+       CREATE TEMPORARY TABLE info_deptos(
+       nombre varchar(40),
+       nroemp int,
+       totalsal int);
+
+/*17.- Cargar la informacion resumida recuperada de la base de datos en la tabla info_deptos */
+
+       INSERT INTO info_deptos SELECT nombred,COUNT(*),SUM(salario) FROM empleado E,departamento D WHERE E.nd=D.numerod
+       GROUP BY nombred;
+
+   INSTRUCIONES DELETE:
+
+/*18.- Eliminar al empleado de apellido LOJA */
+       
+       DELETE FROM empleado WHERE apellido='LOJA';
+
+/*19.- Eliminar los empleados cuyo NSS sea 123456789 */
+      
+       DELETE FROM empleado WHERE nss='123456789';
+
+/*20.- Eliminaar a los empleados que estan el departamento de INVESTIGACION */
+   
+       DELETE FROM empleado WHERE nd IN (SELECT numerod FROM departamento WHERE nombred='INVESTIGACION');
+
+/*21.- Eliminar a todos los empleados */
+   
+       DELETE FROM empleado;
+
+/* Modificacion de Datos:
+   
+   UPDATE nombre_tabla SET nom_atributo1=nuevo_valor1,...,nom_atributoN=nuevo_valorN WHERE Condicion
+
+*/
+
+
+/* ##### Reunion de relaciones  ##### */
+//Restaure la BD dupont y luego desarrolle las siguientes consultas:
+
+   SINTAXIS NO ANSI
+
+/*1.- Presentar una relacion de paises por region, incluyendo el codigo de region */
+    
+       SELECT regiones.region_id, region_nombre, pais_nombre FROM paises,regiones WHERE regiones.region_id=paises.region_id;
+
+/*2.- Averiguar aquellos departamentos que no se encuentran operando en EEUU indicando ademas el codigo de su ubicaion
+      y la ciudad donde estan establecidos */
+
+       SELECT * FROM departamentos; -- Ver para analisis
+       SELECT * FROM ubicaciones;   -- Ver para analisis
+
+       SELECT departamento_nombre, ubicaciones.ubicacion_id, ciudad FROM departamentos, ubicaciones 
+       WHERE departamentos.ubicacion_id=ubicaciones.ubicacion_id AND pais_id='US'; 
+
+/*3.- Enviar un listado de todos los paises del continente asiatico */
+
+       SELECT pais_nombre, region_nombre FROM paises P,regiones R WHERE R.region_id=P.region_id AND region_nombre='Asia'
+       ORDER BY region_nombre,pais_nombre;
+
+   SINTAXIS ANSI
+
+   REUNION NATURAL:
+
+/*4.- Presentar un reporte de todos los departamentos, la ciudad donde estan establecidos, ademas del codigo de 
+      su ubicacion */
+ 
+       SELECT * FROM departamentos;
+       SELECT * FROM ubicaciones;
+
+       SELECT departamento_nombre,ciudad, U.ubicacion_id FROM departamentos D NATURAL JOIN ubicaciones U;
+
+/*5.- Averiguar el orden y la cantidad de las columnas al hacer una Reunion Natural entre regiones y paises para
+      todos aquellos paises cuyo nombre empiece con A */
+
+       SELECT * FROM regiones NATURAL JOIN paises WHERE pais_nombre LIKE 'A%';
+
+/*6.- ¿Que diferencias encuentra al hacer una Reunion Natural entre paises y regiones para todos los paises cuyo
+      nombre empiece con A? */
+
+       SELECT * FROM paises NATURAL JOIN regiones WHERE pais_nombre LIKE 'A%';
+
+      -- Muestra el mismo resultado ya que el NATURAL JOIN  muestra la interseccion ,o sea los datos ligados entre 
+      -- las tablas ,pero con los campos en posicion inversa ya que primero se muestran los campos de la tabla paises.
+
+/*7.- Presente un listado que exhiba para cada region los paises que lo conforman asi como las ciudades que pertenecen
+      a dichos paises */
+    
+       SELECT * FROM paises;
+       SELECT * FROM ubicaciones; 
+       SELECT * FROM regiones;  
+       
+       SELECT region_nombre, pais_nombre, ciudad FROM regiones NATURAL JOIN paises NATURAL JOIN ubicaciones; 
+
+   JOIN ... USING:
+
+/*8.- Elabore una consulta que presente un listado del codigo de ubicacion del departamento,ciudad y el nombre del
+      departamento para todas aquellas ciudades cuyo nombre no inicie en S. */ 
+  
+       SELECT * FROM departamentos;
+       SELECT * FROM ubicaciones; 
+
+       SELECT U.ubicacion_id,ciudad,departamento_nombre FROM departamentos JOIN ubicaciones U USING(ubicacion_id)
+       EXCEPT 
+       SELECT U.ubicacion_id,ciudad,departamento_nombre FROM departamentos JOIN ubicaciones U USING(ubicacion_id)
+       WHERE ciudad LIKE 'S%'; 
+
+/*9.- Presente un listado que mediante JOIN USING exhiba el nombre de region y las ciudades que pertenecen a EEUU*/
+
+       SELECT region_nombre,ciudad FROM regiones JOIN paises USING(region_id) JOIN ubicaciones USING(pais_id) 
+       WHERE pais_id='US';
+
+   JOIN ... ON:
+
+/*10.- Escribe la consulta anterior pero usan ahora el constructor JOIN ON */
+
+       SELECT region_nombre,ciudad FROM regiones R JOIN paises P ON R.region_id=P.region_id JOIN ubicaciones U 
+       ON P.pais_id=U.pais_id WHERE P.pais_id='US';
+
+   PRODUCTO CARTESIANO:
+
+/*11.- Obtenga el total de tuplas de la tabla regiones y de la tabla paises */
+
+       SELECT COUNT(*) AS "Nro Regiones" FROM regiones;
+       SELECT COUNT(*) AS "Nro Paises" FROM paises;
+
+/*12.- Presente un listado que muestre el nombre de la region y el pais que se obtienen del producto cartesiano de 
+       regiones contra paises */
+       
+       SELECT region_nombre,pais_nombre FROM regiones,paises;
+
+/*13.- Escriba la consulta anterior pero usando ahora el constructor CROSS JOIN */
+
+       SELECT region_nombre,pais_nombre FROM regiones CROSS JOIN paises;
+
+                           COMBINACIONES EXTERNAS 
+
+   LEFT OUTER JOIN:
+
+/*14.- Diseñe una consulta que presente todos los paises cuyo nombre se inicia en A y las ciudades que le pertenecen
+       (si hubiera)*/
+
+       SELECT pais_nombre,ciudad FROM paises P LEFT OUTER JOIN ubicaciones U ON P.pais_id=U.pais_id 
+       WHERE pais_nombre LIKE 'A%';
+
+       SELECT pais_nombre,ciudad FROM paises P NATURAL LEFT OUTER JOIN ubicaciones U WHERE pais_nombre LIKE 'A%';
+
+       SELECT pais_nombre,ciudad FROM paises P LEFT OUTER JOIN ubicaciones U USING(pais_id) WHERE pais_nombre LIKE 'A%';   
+       
+/*15.- Realice la consulta anterior pero ahora utilice RIGHT OUTER JOIN */
+
+       SELECT pais_nombre,ciudad FROM ubicaciones U RIGHT OUTER JOIN paises P ON P.pais_id=U.pais_id 
+       WHERE pais_nombre LIKE 'A%';
+
+       SELECT pais_nombre,ciudad FROM ubicaciones U RIGHT LEFT OUTER JOIN paises P WHERE pais_nombre LIKE 'A%';
+
+       SELECT pais_nombre,ciudad FROM ubicaciones U RIGHT OUTER JOIN paises P USING(pais_id) WHERE pais_nombre LIKE 'A%';
+
+/*16.- Diseñe una consulta que presenta a los empleados que no tienen asignado un departamento */
+
+       SELECT * FROM empleados WHERE departamento_id IS NULL;
+
+/*17.- Diseñe una consulta que presente a todos los departamentos que no tienen asignados Empleados */
+
+       SELECT departamento_id FROM departamentos EXCEPT SELECT departamento_id FROM empleados;
+
+   FULL OUTER JOIN:
+
+/*18.- Elabore una consulta que presente en un unico listado el codigo y nombre de todos los departamentos (inclusive 
+       los que no tienen empleados) acompañados del codigo y apellido de todos los empleados que laboran en la empresa
+       (inclusive los que no tienen designado un departamento)*/
+
+       SELECT D.departamento_id,departamento_nombre,empleado_id,apellidos FROM departamentos D FULL JOIN empleados E
+       ON D.departamento_id=E.departamento_id ORDER BY D.departamento_id;
+
+   AUTOREFERENCIADAS:
+
+/*19.- Elabore un listado donde figuren todos los empleados y sus empleados bajo los titulos empleado y jefe
+       respectivamente*/
+       
+       SELECT empleado_id,nombres,gerente_id FROM empleados;
+
+       SELECT E1.nombres AS jefe,E2.nombres AS empleado FROM empleados E1 JOIN empleados E2 
+       ON E2.gerente_id=E1.empleado_id;
+       
+/* ### END ### */
