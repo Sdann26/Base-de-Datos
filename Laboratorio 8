@@ -1,0 +1,67 @@
+/* ##### Laboratorio 8 : Restricciones ##### */
+
+   CREACION DE DOMINIOS:
+
+/*1.- Crear los siguientes dominios:
+      a)NombreValido con una longitud de 40
+      b)Booleano
+      c)EnteroObligatorio para enteros no nulos 
+      d)TipoSocio que admita solo P(profesor) y A(alumno)*/
+
+    CREATE DOMAIN NombreValido AS varchar(40);
+    CREATE DOMAIN logico AS boolean CHECK(VALUE IN (true,false));
+    CREATE DOMAIN EnteroObligatorio AS int NOT NULL;
+    CREATE DOMAIN TipoSocio AS char(1) CHECK(VALUE IN('P','A'));
+
+   RESTRICCIONES DE LLAVES:
+
+/*2.- Defina la relacion Autor y establezca una clave principal */
+
+     CREATE TABLE autor(
+     cod_autor EnteroObligarotio,
+     nombre NombreValido,
+     PRIMARY KEY(cod_Autor)); 
+
+/*3.- Defina la relacion Departamento que incluya una clave principal */
+
+     CREATE TABLE departamento(
+     nombre NombreValido,
+     titulacion NombreValido,
+     director NombreValido,
+     PRIMARY KEY(nombre));
+
+/*4.- Defina la relacion Ejemplar cuya clave principal estará formada por dos atributos */
+
+     CREATE TABLE ejemplar(
+     claveloc int,
+     ncorrel int,
+     prestable int,
+     fdebol int,
+     sa int,
+     PRIMARY KEY(claveloc,ncorrel));
+
+/*5.- Defina la relacion Usuario con una clave principal y llaves unicas para los atributos dni y email */
+
+     CREATE TABLE usuario(
+     nrosocio int,
+     dni char(8),
+     nombre varchar(80),
+     email varchar(60),
+     tipo TipoSocio,
+     PRIMARY KEY(nrosocio),
+     UNIQUE(dni),
+     UNIQUE(email));
+
+/*6.- Defina la relacion Area de modo que posea una clave principal y una clave foranea */
+
+     CREATE TABLE area(
+     cod_area char(2),
+     nom_area NombreValido,
+     nom_dpto NombreValido,
+     PRIMARY KEY(cod_area),
+     CONSTRAINT fk_area_dpto FOREIGN KEY(nom_dpto) REFERENCES departamento(nombre));
+
+/*7.- Defina la relacion Fondo de modo que posea una clave principal y una clave foranea */
+
+
+/*8.- Defina la relacion Profesor que incluya una clave principal y dos claves foraneas */
