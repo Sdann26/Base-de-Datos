@@ -1,0 +1,114 @@
+/* ##### Laboratorio 9 : Esquemas ##### */
+
+   CREACION DE ESQUEMAS DE BASE DE DATOS:
+
+/*1.- Identificar el esquema actual */
+
+     SELECT current_schema;
+
+/*2.- Crear los esquemas Produccion,Desarrollo y Veterinaria */
+
+     CREATE SCHEMA produccion;
+     CREATE SCHEMA desarrollo;
+     CREATE SCHEMA veterinaria;
+
+/*3.- Listar todos los esquemas que existan */
+
+     SELECT * FROM information_schema.schemata;
+
+/*4.- Crear la tabla autor(cod_autor,nombre) en el esquema de produccion */
+
+     CREATE TABLE produccion.autor(
+     cod_autor int,
+     nombre varchar(80));
+
+/*5.- Listar todas las tablas del esquema produccion */
+
+     SELECT table_name FROM information_schema.tables WHERE table_schema='produccion';
+
+/*6.- Insertar las siguientes tuplas en la tabla autor del esquema produccion:
+       (300,'TENENBAUM')
+       (310,'SPIEGEL & MURRAY')
+       (320,'ALONSO-FINN')          */
+
+     INSERT INTO produccion.autor VALUES(300,'TENENBAUM'),
+                                        (310,'SPIEGEL & MURRAY'),
+                                        (320,'ALONSO-FINN');
+
+/*7.- Traslade la relación Autor al Esquema Desarrollo */
+  
+     ALTER TABLE produccion.autor SET SCHEMA desarrollo;
+
+/*8.- Ahora traslade Autor al Esquema Produccion */
+
+     ALTER TABLE desarrollo.autor SET SCHEMA produccion;
+
+/*9.- Eliminar los esquemas Desarrollo y Produccion ¿Que dificultades presenta ? */
+
+     DROP SCHEMA desarrollo;
+     DROP SCHEMA produccion; 
+     -- No se puede borrar estos esquemas ya que la tabla desarrollo.autor depende del esquema desarrollo y lo 
+     -- mismo ocurre con produccion;
+
+/*10.- Ahora copie la relacion Autor al Esquema veterinaria */
+
+     CREATE TABLE veterinaria.autor AS SELECT * FROM produccion.autor;
+
+/* ##### Secuencias ##### */
+
+   ENUMERANDO FILAS:CREACION Y MANIPULACION DE SECUENCIAS
+
+/*1.- Obtener la secuencia suc_01 con primer termino 15, ultimo termino 500 y razon 5 */
+
+     CREATE SEQUENCE suc_01 MINVALUE 15 MAXVALUE 500 INCREMENT 5;
+
+/*2.- Consulte tres veces a nextval de la secuencia suc_01 y vea que sucede */
+
+     SELECT NEXTVAL('suc_01');  ---> 15
+     SELECT NEXTVAL('suc_01');  ---> 20
+     SELECT NEXTVAL('suc_01');  ---> 25
+
+/*3.- Determine el valor actual de la secuencia suc_01*/
+
+     SELECT CURRVAL('suc_01');  ---> 25
+
+/*4.- Establezca el valor de la secuencia a 15 */
+
+     SELECT SETVAL('suc_01',15); ---> 15
+
+/*5.- Crear la tabla temporal tmp_prueba2 e introduzca la secuencia suc_01.Los campos son: 
+      codigo int,
+      nombre varchar(15)  */
+
+     CREATE TEMP TABLE tmp_prueba2(
+     codigo int DEFAULT NEXTVAL('suc_01'),
+     nombre varchar(15));
+
+/*6.- Inserte los siguientes nombres en las tablas tmp_prueba2 : papeye,pepeye,pipeye,pupeye */
+
+     INSERT INTO tmp_prueba2(nombre) VALUES ('papeye'),
+                                            ('pepeye'),
+                                            ('pipeye'),
+                                            ('pupeye');
+
+     SELECT * FROM tmp_pruba2;  --> Verificar los valores
+
+/*7.- Reinicie el valor de la secuencia suc_01 en 15 */
+
+     ALTER SEQUENCE suc_01 RESTART WITH 15;
+
+/*8.- Intente eliminar la secuencia suc_01.Explique si esto es posible */
+
+     DROP SEQUENCE suc_01;
+     -- No se puede borrar la secuencia suc_01 porque otros objetos dependen de él.
+
+     DROP SEQUENCE suc_01 CASCADE; --> Permite borrar aun con la dependencia.
+
+/*9.- Inserte en la tabla tmp_prueba2 el registro 'POPEYE'*/
+
+     INSERT INTO tmp_prueba2(nombre) VALUES ('popeye');
+
+/*10.- Consulte la tabla tmp_prueba2 y vea que es lo que sucede */
+
+     SELECT * FROM tmp_pruba2;
+     -- Como ya no existe la secuencia,el codigo para 'popeye' tendrá un valor nulo
