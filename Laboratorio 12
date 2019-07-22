@@ -1,0 +1,80 @@
+/* ##### Laboratorio 12 : Funciones ##### */
+
+/*1.- Crear la funcion "escribe" que exhiba un numero real en salida */
+
+    CREATE FUNCTION escribe() RETURNS integer
+    AS
+    $$
+    SELECT 115;
+    $$
+    Language SQL;
+
+/*2.- Invoque a la funcion "escribe" */
+
+    SELECT escribe();
+
+/*3.- Desarrole una funcion que reciba como argumento dos numeros enteros y retorne su suma */
+
+    CREATE OR REPLACE suma(num1 int,num2 int) RETURNS integer
+    AS
+    $$
+    SELECT num1+num2;
+    $$
+    Language SQL;
+
+/*4.- Suma 375 y 750 */
+
+    SELECT suma('375','750');
+
+
+/*5.- Elabore una funcion para convertir grados Farenheit a Centigrados */
+
+    CREATE OR REPLACE convercion(num1 int) RETURNS integer
+    AS
+    $$
+    SELECT (num1 − 32) × 5/9 ;
+    $$
+    Language SQL;
+
+
+/*6.- Averiguar a cuanto equivale 77° Farenheit */
+
+    SELECT conversion('77');
+
+  FUNCIONES CON TABLAS COMO PARAMETROS:
+
+/*7.- Crear la relacion temporal Trabajador con atributos nombre,sueldo y edad */
+
+    CREATE TEMP TABLE Trabajador(
+    nombre varchar(40) NOT NULL,
+    sueldo int,
+    edad int NOT NULL);
+
+/*8.- Inserte las tuplas: 
+      ('Marisol',2400,21),
+      ('Paloma',4200,30)  */
+      
+    INSERT INTO 'Trabajador' VALUES ('Marisol',2400,21),
+                                  ('Paloma',4200,30);
+
+
+/*9.- Elabore una funcion que duplique el sueldo de los trabajadores */
+
+
+
+/*10.- Presente el nombre con los atributos duplicados para los trabajadores mayores de 25 años */
+
+
+
+
+/*11.- Liste a los trabajadores con aumento del 10% sobre el sueldo duplicado */
+
+
+
+   FUNCIONES PL/PGSQL:
+
+/*12.- Elabore la funcion ObtenerDepa que permita recuperar el nombre del departamento dado su codigo */
+
+
+
+/*13.- Exhiba el nombre del cliente y su departamento de origen */
