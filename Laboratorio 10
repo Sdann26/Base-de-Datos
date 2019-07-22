@@ -1,0 +1,54 @@
+/* ##### Laboratorio 10 : Vistas ##### */
+//Restaurar la base de datos walmart y desarrollar
+
+/*1.- Elabore una vista que presente un saludo.LLamela vista_oo ¿Que es lo que sugiere PGAdmin?*/
+
+   CREATE VIEW vista_00 AS SELECT 'Bienvenido a las Vistas';
+
+/*2.- Elimine la vista_00 */
+
+   DROP VIEW vista_00;
+
+/*3.- Mejore la estructura de la vista_00 */
+
+   CREATE VIEW vista_00 AS SELECT TEXT 'Bienvenido a las Vistas' AS titulo;
+
+/*4.- Elabora la vista_01 con los campos codigo, nombre de compañia ,direccion y pais de la relacion Clientes */
+
+   CREATE VIEW vista_01 AS SELECT idcliente,nombrecia,direccion,pais FROM Clientes;
+
+/*5.- Examine los resultados de la vista_01 */
+
+   SELECT * FROM vista_01;
+
+/*6.- Crear una vista_02 a partir de la tabla Productos. Utilice columnas calculadas y cambie los titulos a codigo
+      producto,nombre producto,precio total */
+
+   CREATE VIEW vista_02(producto,"Nombre Producto","precio total") AS SELECT 
+   idproducto,nombreproducto,unidadesenexistencia*preciounidad FROM productos;
+
+/*7.- Examine los resultados de la vista_02 */
+
+   SELECT * FROM vista_02;
+
+/*8.- Crea una vista_03 que permita examinar a los clientes que residen en Brasil */
+
+   CREATE VIEW vista_03 AS SELECT * FROM Clientes WHERE pais='Brasil';
+    
+/*9.- Examine los resultados de las vista_03 */
+
+    SELECT * FROM vista_03;
+
+/*10.- Crear la vista ClientesProveedoresCiudad que presente informacion combinada Ciudad,nombre compañia,nombre
+       contacto y tipo, tanto de los Clientes como de los proveedores */
+
+    CREATE VIEW ClientesProveedoresCiudad("Ciudad del Cliente","Compañia del Cliente","Contacto del Cliente",
+    "Cargo del contacto del Cliente","Ciudad del Provedor","Compañia del Proveedor","Contacto del Proveedor",
+    "Cargo del contacto del Prooveedor") AS SELECT C.ciudad, C.nombrecia, C.nombrecontacto, C.cargocontacto, Prov.ciudad,
+    Prov.nombrecia Prov.nombrecontacto, Prov.cargocontacto FROM Clientes AS C, Proveedores AS Prov, Pedidos AS Pe, 
+    Productos AS Prod, detallesdepedidos AS Dp WHERE C.idcliente=Pe.idcliente AND Prov.idproveedor=Prod.idproveedor AND 
+    Dd.idproducto=Prod.idproducto AND Dd.idpedido=Pe.idpedido;
+    
+/*11.- Examine los resultados de la vista ClientesProveedoresCiudad */
+
+    SELECT * FROM ClientesProveedoresCiudad;
